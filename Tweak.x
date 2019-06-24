@@ -1,8 +1,7 @@
 %hook SICameraView
 
 - (void)setImageTmp:(UIImage *)id {
-	// NSData *pngData = [NSData dataWithContentsOfFile:@"PA_01-1.jpg"];
-	UIImage *image = [UIImage imageNamed:@"PA_01-1.jpg"];
+	UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://invader.spotter.free.fr/images/AIX_01-grosplan.png"]]];
 	NSLog(@"pngData: %@", [UIImage imageNamed:@"PA_01-1.jpg"]);
 	NSLog(@"original: %@", id);
 	NSLog(@"custom: %@", image);
