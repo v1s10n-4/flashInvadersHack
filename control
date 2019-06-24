@@ -1,0 +1,9 @@
+Package: com.v1s10n4.flashinvadershack
+Name: flashInvadersHack
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: An awesome MobileSubstrate tweak!
+Maintainer: v1s10n_4
+Author: v1s10n_4
+Section: Tweaks
