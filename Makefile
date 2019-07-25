@@ -14,6 +14,11 @@ flashInvadersHack_FRAMEWORKS = UIKit
 flashInvadersHack_FILES = Tweak.x
 flashInvadersHack_CFLAGS = -fobjc-arc
 
+BUNDLE_NAME = flashInvadersHackBundle
+
+flashInvadersHackBundle_INSTALL_PATH = /Library/Application Support/DynamicLibraries
+
 include $(THEOS_MAKE_PATH)/tweak.mk
+include $(THEOS)/makefiles/bundle.mk
 SUBPROJECTS += flashinvadershackprefs
 include $(THEOS_MAKE_PATH)/aggregate.mk

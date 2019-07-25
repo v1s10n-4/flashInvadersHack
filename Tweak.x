@@ -1,7 +1,9 @@
+#define kBundlePath @"/Library/Application Support/DynamicLibraries/flashInvadersHackBundle.bundle"
 #define PLIST_PATH @"/var/mobile/Library/Preferences/com.v1s10n4.flashinvadershackprefs.plist"
+#import <CoreLocation/CoreLocation.h>
 
 static NSString *GetPrefString(NSString *key) {
-    return [[NSDictionary dictionaryWithContentsOfFile:PLIST_PATH] valueForKey:key];
+	return [[NSDictionary dictionaryWithContentsOfFile:PLIST_PATH] valueForKey:key];
 }
 
 static bool GetPrefBool(NSString *key) {
@@ -15,24 +17,23 @@ static CGFloat GetPrefFloat(NSString *key) {
 @implementation UIImage (Crop)
 - (UIImage *)crop:(CGRect)rect {
 
-    rect = CGRectMake(rect.origin.x*self.scale, 
-                      rect.origin.y*self.scale, 
-                      rect.size.width*self.scale, 
-                      rect.size.height*self.scale);       
+	rect = CGRectMake(rect.origin.x*self.scale, 
+					  rect.origin.y*self.scale, 
+					  rect.size.width*self.scale, 
+					  rect.size.height*self.scale);	   
 
-    CGImageRef imageRef = CGImageCreateWithImageInRect([self CGImage], rect);
-    UIImage *result = [UIImage imageWithCGImage:imageRef 
-                                          scale:self.scale 
-                                    orientation:self.imageOrientation]; 
-    CGImageRelease(imageRef);
-    return result;
+	CGImageRef imageRef = CGImageCreateWithImageInRect([self CGImage], rect);
+	UIImage *result = [UIImage imageWithCGImage:imageRef 
+										  scale:self.scale 
+									orientation:self.imageOrientation]; 
+	CGImageRelease(imageRef);
+	return result;
 }
 @end
 
 %hook SICameraView
-- (void)setImageTmp:(UIImage *)id {
+- (id)formatImage:(id)id {
 	NSString *url = GetPrefString(GetPrefBool(@"useImage") ? @"imageUrl" : @"photoUrl");
-	NSLog(@"%@", url);
 	UIImage *image = [UIImage imageWithData: [
 		NSData dataWithContentsOfURL: [
 			NSURL URLWithString: url
@@ -44,6 +45,28 @@ static CGFloat GetPrefFloat(NSString *key) {
 	}
 	NSLog(@"original: %@", id);
 	NSLog(@"custom: %@", image);
-	%orig(GetPrefBool(@"enabled") ? image : id);
+	return %orig(GetPrefBool(@"enabled") ? image : id);
+}
+%end
+
+%hook SIActionView
+- (CLLocationCoordinate2D)coordinate {
+
+	NSBundle *bundle = [[NSBundle alloc] initWithPath:kBundlePath];
+	NSString* jsonPath = [bundle pathForResource:@"locations" ofType:@"json"];
+	NSString* jsonString = [[NSString alloc] initWithContentsOfFile:jsonPath encoding:NSUTF8StringEncoding error:nil];
+	NSData* jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+	NSError *error = nil;
+	id object = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+	NSDictionary *arrayResult;
+	for (int i = 0; i < [object count]; i++) {
+		arrayResult = [object objectAtIndex:i];
+		if ([[arrayResult objectForKey:@"url"] isEqualToString:GetPrefString(GetPrefBool(@"useImage") ? @"imageUrl" : @"photoUrl")])
+			break;
+	}
+	if (error)
+		NSLog(@"error: %@", error);
+	CLLocationCoordinate2D coords = {[[arrayResult objectForKey:@"latitude"] doubleValue], [[arrayResult objectForKey:@"longitude"] doubleValue]};
+	return GetPrefBool(@"enabled") ? coords : %orig;
 }
 %end

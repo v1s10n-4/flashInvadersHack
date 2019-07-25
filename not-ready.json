@@ -1,0 +1,26 @@
+[{
+    "latitude": "48.8915980000",
+    "longitude": "2.3446640000",
+    "address": " école primaire Hermel",
+    "name": "PA_0111"
+},{
+    "latitude": "48.8587280000",
+    "longitude": "2.3327790000",
+    "address": " pont du Carrousel",
+    "name": "PA_0965"
+},{
+    "latitude": "48.8812270000",
+    "longitude": "2.3693600000",
+    "address": " face au 210 quai de Jemmapes",
+    "name": "au"
+}, {
+    "latitude": "48.8806200000",
+    "longitude": "2.3616900000",
+    "address": " 191 rue La Fayette",
+    "name": "rue"
+}, {
+    "latitude": "48.8733670000",
+    "longitude": "2.3640220000",
+    "address": " face au 100 quai de Jemmapes",
+    "name": "Time"
+}]
